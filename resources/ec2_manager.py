@@ -143,3 +143,32 @@ class EC2Manager:
             return {"success": True}
         except ClientError as e:
             return {"error": str(e)}
+
+    def _get_latest_ami(self, os_type):
+        """
+        Helper: Fetches the latest AMI ID from AWS Systems Manager (SSM) Parameter Store.
+        This ensures we always launch the most secure, up-to-date version of the OS.
+        """
+        # Map our user-friendly names to AWS SSM Parameter paths
+        ami_map = {
+            'amazon_linux': '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64',
+            'ubuntu': '/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id'
+        }
+
+        if os_type not in ami_map:
+            raise ValueError(f"Unknown OS type: {os_type}")
+
+        try:
+            # We create a temporary client just for SSM
+            # (Make sure 'import boto3' is at the top of your file!)
+            ssm_client = boto3.client('ssm')
+            
+            # Fetch the parameter
+            response = ssm_client.get_parameter(Name=ami_map[os_type])
+            
+            # Extract the actual AMI ID (e.g., "ami-012345...")
+            return response['Parameter']['Value']
+
+        except ClientError as e:
+            # If SSM fails, we raise an error so create_instance can catch it
+            raise Exception(f"Failed to fetch dynamic AMI: {str(e)}")

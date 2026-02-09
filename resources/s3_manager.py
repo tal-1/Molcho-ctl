@@ -67,9 +67,6 @@ class S3Manager:
                 name = bucket['Name']
                 
                 # Optimization: Skip buckets that don't match our prefix
-                if not name.startswith("molcho-"):
-                    continue
-
                 try:
                     # Check tags
                     tags = self.s3.get_bucket_tagging(Bucket=name)
@@ -96,13 +93,31 @@ class S3Manager:
             return []
 
     def delete_bucket(self, bucket_name):
-        """Delete a bucket (must be empty)."""
-        if not bucket_name.startswith("molcho-"):
-             return {"error": "Safety: You can only delete 'molcho-' buckets."}
-
+        """Delete a bucket (must be empty and owned by CLI)."""
         try:
+            # 1. Verify Ownership (Safety Check)
+            try:
+                tags = self.s3.get_bucket_tagging(Bucket=bucket_name)
+                tag_list = tags.get('TagSet', [])
+                
+                is_ours = False
+                for t in tag_list:
+                    if t['Key'] == 'CreatedBy' and t['Value'] == 'molcho-platform-cli':
+                        is_ours = True
+                        break
+                
+                if not is_ours:
+                    return {"error": "Access Denied: You can only delete buckets created by this CLI."}
+            
+            except ClientError:
+                # If we can't read tags (e.g. 404 or 403), assume it's not ours or doesn't exist
+                # But we let the delete fail naturally below if it doesn't exist
+                pass
+
+            # 2. Perform Delete
             self.s3.delete_bucket(Bucket=bucket_name)
             return {"success": True}
+
         except ClientError as e:
             if "BucketNotEmpty" in str(e):
                 return {"error": "Bucket is not empty. Please empty it first."}
@@ -114,9 +129,6 @@ class S3Manager:
         Security: Verifies that the bucket belongs to this CLI before uploading.
         """
         # 1. Verify Ownership (Security Check)
-        if not bucket_name.startswith("molcho-"):
-             return {"error": "Security: You can only upload to 'molcho-' buckets."}
-
         try:
             # Check for the specific tag
             tags = self.s3.get_bucket_tagging(Bucket=bucket_name)

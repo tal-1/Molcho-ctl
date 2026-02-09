@@ -160,7 +160,7 @@ def create(instance_type, os_type, name):
     
     if "error" in result:
         console.print(f"[bold red]FAILED:[/bold red] {result['error']}")
-        sys.exit(1)
+        return
     else:
         console.print(f"[bold green]SUCCESS:[/bold green] Created instance [bold]{result['id']}[/bold]")
 
