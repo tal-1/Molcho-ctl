@@ -5,7 +5,8 @@ A self-service tool for managing AWS resources via CLI and Web Dashboard.
 This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DNS zones, while enforcing strict safety guardrails and tagging standards.
 
 
-## 🚀 Features
+##
+🚀 Features
 
 * **EC2:** Launch safe, pre-configured instances (`t3.micro` or `t2.small` only) with a hard cap of 2 active instances.
 * **S3:** Create standard storage buckets with mandatory public access confirmation.
@@ -13,7 +14,8 @@ This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DN
 * **Safety & Compliance:** All resources are automatically tagged and filtered so the tool only manages its own resources.
 
 
-## 🏷️ Tagging Strategy
+##
+🏷️ Tagging Strategy
 To ensure safety and ownership, all resources created by this tool are automatically tagged with:
 
 * Project: python-integrative-exercise
@@ -23,7 +25,8 @@ To ensure safety and ownership, all resources created by this tool are automatic
 Note: The tool strictly filters list views to show only resources containing the CreatedBy tag or signature.
 
 
-## 🛠️ Installation
+##
+🛠️ Installation
 
 1.  **Prerequisites:**
     * Python 3.10+
@@ -44,14 +47,17 @@ Note: The tool strictly filters list views to show only resources containing the
     ```
 
 
-## 💻 Usage
+##
+💻 Usage
+##
 
 
-## CLI Mode
+CLI Mode
 You can manage resources directly from your terminal using the `molchoctl` command.
 
 For more information use the command `molchoctl -h`
 
+##
 
 ### **EC2 (Compute):**
 ### List all instances created by this tool
