@@ -5,69 +5,81 @@ from botocore.exceptions import ClientError
 class Route53Manager:
     def __init__(self):
         self.client = boto3.client('route53')
-        # This comment acts as a "Signature" to prove we created the zone
-        self.MARKER = 'Created by Molcho Platform CLI'
+        self.signature = 'Created by Molcho Platform CLI'
 
-    def create_zone(self, zone_name):
+    # --- PART 1: Zone Management (Domains) ---
+
+    def create_hosted_zone(self, domain_name, private_zone=False):
         """Create a new Route53 Hosted Zone."""
         try:
-            ref = f"{zone_name}-{int(time.time())}"
+            # We need a unique string so AWS knows this is a new request
+            ref = f"molcho-cli-{int(time.time())}"
+            config = {
+                'Comment': 'Created by Molcho Platform CLI', 
+                'PrivateZone': private_zone
+            }
+            
             response = self.client.create_hosted_zone(
-                Name=zone_name,
+                Name=domain_name,
                 CallerReference=ref,
-                HostedZoneConfig={'Comment': self.MARKER}
+                HostedZoneConfig=config
             )
             return {
-                "success": True, 
                 "id": response['HostedZone']['Id'], 
                 "name": response['HostedZone']['Name']
             }
         except ClientError as e:
             return {"error": str(e)}
+        except Exception as e:
+            return {"error": str(e)}
 
     def list_hosted_zones(self):
-        """List ONLY zones created by this CLI."""
+        """List ONLY hosted zones created by this tool."""
         try:
+            # 1. Get ALL zones from AWS
             response = self.client.list_hosted_zones()
+            
             my_zones = []
             
+            # 2. Filter them one by one
             for z in response['HostedZones']:
-                # Filter: Only show zones with our specific comment
-                if z.get('Config', {}).get('Comment') == self.MARKER:
+                # Get the comment from the config
+                comment = z.get('Config', {}).get('Comment', '')
+                
+                # 3. STRICT FILTER: Only show if the signature matches exactly
+                if comment == self.signature:
                     my_zones.append({
-                        'Id': z['Id'],
-                        'Name': z['Name'],
-                        'Count': z['ResourceRecordSetCount']
+                        "Id": z['Id'],
+                        "Name": z['Name'],
+                        "Count": z['ResourceRecordSetCount'],
+                        "Private": z['Config']['PrivateZone']
                     })
+            
             return my_zones
+            
         except ClientError as e:
+            print(f"AWS Error: {e}")
+            return []
+        except Exception as e:
+            print(f"Error: {e}")
             return []
 
-    def create_record(self, zone_id, record_name, target_ip):
-        """Create an A-Record (Only if we own the Zone)."""
-        
-        # 1. Ownership Check
-        try:
-            zone_info = self.client.get_hosted_zone(Id=zone_id)
-            comment = zone_info['HostedZone'].get('Config', {}).get('Comment', '')
-            if comment != self.MARKER:
-                return {"error": "ACCESS DENIED: You can only manage records for zones created by this CLI."}
-        except ClientError as e:
-            return {"error": f"Zone not found: {str(e)}"}
+    # --- PART 2: Record Management (DNS Records) ---
 
-        # 2. Create Record
+    def create_record(self, zone_id, record_name, record_type, record_value, ttl=300):
+        """Create a DNS record (A, CNAME, TXT, etc)."""
         try:
             self.client.change_resource_record_sets(
                 HostedZoneId=zone_id,
                 ChangeBatch={
-                    'Comment': 'Created by Molcho Platform CLI',
+                    'Comment': self.signature,
                     'Changes': [{
                         'Action': 'UPSERT',
                         'ResourceRecordSet': {
                             'Name': record_name,
-                            'Type': 'A',
-                            'TTL': 300,
-                            'ResourceRecords': [{'Value': target_ip}]
+                            'Type': record_type,
+                            'TTL': int(ttl),
+                            'ResourceRecords': [{'Value': record_value}]
                         }
                     }]
                 }
@@ -75,3 +87,55 @@ class Route53Manager:
             return {"success": True}
         except ClientError as e:
             return {"error": str(e)}
+        except Exception as e:
+            return {"error": str(e)}
+
+    def delete_record(self, zone_id, record_name, record_type, record_value):
+        """Delete a specific DNS record."""
+        try:
+            self.client.change_resource_record_sets(
+                HostedZoneId=zone_id,
+                ChangeBatch={
+                    'Changes': [{
+                        'Action': 'DELETE',
+                        'ResourceRecordSet': {
+                            'Name': record_name,
+                            'Type': record_type,
+                            'TTL': 300, # TTL is required by syntax even for delete
+                            'ResourceRecords': [{'Value': record_value}]
+                        }
+                    }]
+                }
+            )
+            return {"success": True}
+        except ClientError as e:
+            return {"error": str(e)}
+        except Exception as e:
+            return {"error": str(e)}
+
+    def list_records(self, zone_id):
+        """List all DNS records in a specific hosted zone."""
+        try:
+            response = self.client.list_resource_record_sets(HostedZoneId=zone_id)
+            
+            clean_records = []
+            for r in response['ResourceRecordSets']:
+                # Safety check for complex records (like AWS Aliases)
+                if 'ResourceRecords' in r and len(r['ResourceRecords']) > 0:
+                    value = r['ResourceRecords'][0]['Value']
+                else:
+                    value = "Alias/Complex"
+
+                clean_records.append({
+                    "Name": r['Name'],
+                    "Type": r['Type'],
+                    "TTL": r.get('TTL', '-'),
+                    "Value": value
+                })
+            return clean_records
+        except ClientError as e:
+            print(f"AWS Error listing records: {e}")
+            return []
+        except Exception as e:
+            print(f"Error listing records: {e}")
+            return []
