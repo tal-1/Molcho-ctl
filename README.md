@@ -5,6 +5,8 @@ A self-service tool for managing AWS resources via CLI and Web Dashboard.
 This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DNS zones, while enforcing strict safety guardrails and tagging standards.
 
 
+
+
 ## 🚀 Features
 
 * **EC2:** Launch safe, pre-configured instances (`t3.micro` or `t2.small` only) with a hard cap of 2 active instances.
@@ -13,14 +15,18 @@ This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DN
 * **Safety & Compliance:** All resources are automatically tagged and filtered so the tool only manages its own resources.
 
 
+
+
 ## 🏷️ Tagging Strategy
 To ensure safety and ownership, all resources created by this tool are automatically tagged with:
 
-Project: python-integrative-exercise
-Owner: <your-username> (Detected automatically)
-CreatedBy: molcho-platform-cli
+* Project: python-integrative-exercise
+* Owner: <your-username> (Detected automatically)
+* CreatedBy: molcho-platform-cli
 
 Note: The tool strictly filters list views to show only resources containing the CreatedBy tag or signature.
+
+
 
 
 ## 🛠️ Installation
@@ -53,29 +59,29 @@ You can manage resources directly from your terminal using the `molchoctl` comma
 
 
 **EC2 (Compute):**
-# List all instances created by this tool
+#### List all instances created by this tool
 molchoctl ec2 list
 
-# Create a new web server (Safe types only)
+#### Create a new web server (Safe types only)
 molchoctl ec2 create --name web-server-1 --type t3.micro
 
-# Stop an instance
+#### Stop an instance
 molchoctl ec2 stop --id i-0123456789abcdef0
 
 
 **S3 (Storage):**
-# Create a private bucket
+#### Create a private bucket
 molchoctl s3 create --name my-data-bucket --private
 
-# Create a public bucket (Requires confirmation)
+#### Create a public bucket (Requires confirmation)
 molchoctl s3 create --name my-public-assets --public
 
 
 **Route53 (DNS):**
-# List hosted zones
+#### List hosted zones
 molchoctl route53 list-zones
 
-# Create a new zone
+#### Create a new zone
 molchoctl route53 create-zone --domain molcho-app.internal
 
 
