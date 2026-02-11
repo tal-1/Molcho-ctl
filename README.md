@@ -54,29 +54,29 @@ You can manage resources directly from your terminal using the `molchoctl` comma
 
 **EC2 (Compute):**
 ### List all instances created by this tool
-molchoctl ec2 list
+* molchoctl ec2 list
 
 ### Create a new web server (Safe types only)
-molchoctl ec2 create --name web-server-1 --type t3.micro
+* molchoctl ec2 create --name web-server-1 --type t3.micro
 
 ### Stop an instance
-molchoctl ec2 stop --id i-0123456789abcdef0
+* molchoctl ec2 stop --id i-0123456789abcdef0
 
 
 **S3 (Storage):**
 ### Create a private bucket
-molchoctl s3 create --name my-data-bucket --private
+* molchoctl s3 create --name my-data-bucket --private
 
 ### Create a public bucket (Requires confirmation)
-molchoctl s3 create --name my-public-assets --public
+* molchoctl s3 create --name my-public-assets --public
 
 
 **Route53 (DNS):**
 ### List hosted zones
-molchoctl route53 list-zones
+* molchoctl route53 list-zones
 
 ### Create a new zone
-molchoctl route53 create-zone --domain molcho-app.internal
+* molchoctl route53 create-zone --domain molcho-app.internal
 
 
 
