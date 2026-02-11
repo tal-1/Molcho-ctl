@@ -4,8 +4,7 @@ A self-service tool for managing AWS resources via CLI and Web Dashboard.
 
 This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DNS zones, while enforcing strict safety guardrails and tagging standards.
 
-
-##🚀 **Features**
+## 🚀 **Features**
 
 * **EC2:** Launch safe, pre-configured instances (`t3.micro` or `t2.small` only) with a hard cap of 2 active instances.
 * **S3:** Create standard storage buckets with mandatory public access confirmation.
