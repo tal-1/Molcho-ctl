@@ -44,12 +44,11 @@ Note: The tool strictly filters list views to show only resources containing the
 
 
 
-## **CLI Usage**
+## 💻 **CLI Usage**
 You can manage resources directly from your terminal using the `molchoctl` command.
 
 For more information use the command `molchoctl -h`
 
-##
 
 ### **EC2 (Compute):**
 ### List all instances created by this tool
@@ -79,9 +78,8 @@ For more information use the command `molchoctl -h`
 ### Create a new zone
 * `molchoctl route53 create-zone --domain molcho-app.internal`
 
-##
 
-## **Web GUI Usage**
+## 💻 **Web GUI Usage**
 For a visual interface, launch the Streamlit dashboard:
 
 `streamlit run app.py`
