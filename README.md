@@ -47,7 +47,7 @@ Note: The tool strictly filters list views to show only resources containing the
 ## 💻 Usage
 
 
-### CLI Mode
+## CLI Mode
 You can manage resources directly from your terminal using the `molchoctl` command.
 
 
@@ -80,7 +80,7 @@ molchoctl route53 create-zone --domain molcho-app.internal
 
 
 
-### Web GUI Mode
+## Web GUI Mode
 For a visual interface, launch the Streamlit dashboard:
 
 streamlit run app.py
