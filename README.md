@@ -63,7 +63,7 @@ For more information use the command `molchoctl -h`
 ### Stop an instance
 * `molchoctl ec2 stop --id i-0123456789abcdef0`
 
-**----------------------------------------------------------------**
+**------------------------------------------------------------------------**
 
 ### **S3 (Storage):**
 ### Create a private bucket
@@ -72,7 +72,7 @@ For more information use the command `molchoctl -h`
 ### Create a public bucket (Requires confirmation)
 * `molchoctl s3 create --name my-public-assets --public`
 
-**----------------------------------------------------------------**
+**------------------------------------------------------------------------**
 
 ### **Route53 (DNS):**
 ### List hosted zones
@@ -81,7 +81,7 @@ For more information use the command `molchoctl -h`
 ### Create a new zone
 * `molchoctl route53 create-zone --domain molcho-app.internal`
 
-**----------------------------------------------------------------**
+**------------------------------------------------------------------------**
 
 ## Web GUI Mode
 For a visual interface, launch the Streamlit dashboard:
