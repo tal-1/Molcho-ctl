@@ -49,10 +49,11 @@ Note: The tool strictly filters list views to show only resources containing the
 
 ## CLI Mode
 You can manage resources directly from your terminal using the `molchoctl` command.
+
 For more information use the command `molchoctl -h`
 
 
-**EC2 (Compute):**
+### **EC2 (Compute):**
 ### List all instances created by this tool
 * `molchoctl ec2 list`
 
@@ -63,7 +64,7 @@ For more information use the command `molchoctl -h`
 * `molchoctl ec2 stop --id i-0123456789abcdef0`
 
 
-**S3 (Storage):**
+### **S3 (Storage):**
 ### Create a private bucket
 * `molchoctl s3 create --name my-data-bucket --private`
 
@@ -71,7 +72,7 @@ For more information use the command `molchoctl -h`
 * `molchoctl s3 create --name my-public-assets --public`
 
 
-**Route53 (DNS):**
+### **Route53 (DNS):**
 ### List hosted zones
 * `molchoctl route53 list-zones`
 
