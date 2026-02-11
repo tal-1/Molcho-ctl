@@ -146,7 +146,7 @@ def ec2():
     pass
 
 @ec2.command()
-@click.option('--type', 'instance_type', default='t3.micro', help='Instance Type (t3.micro, t2.small)')
+@click.option('--type', 'instance_type', default='t3.micro', type=click.Choice(['t3.micro', 't2.small']), help='Instance Type')
 @click.option('--os', 'os_type', type=click.Choice(['amazon_linux', 'ubuntu']), default='amazon_linux', help='OS Choice')
 @click.option('--name', required=True, help='Name tag for the server')
 def create(instance_type, os_type, name):
