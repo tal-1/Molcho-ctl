@@ -12,7 +12,7 @@ This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DN
 * **Safety & Compliance:** All resources are automatically tagged and filtered so the tool only manages its own resources.
 
 
-## 🏷️**Tagging Strategy**
+## 🏷️*Tagging Strategy**
 To ensure safety and ownership, all resources created by this tool are automatically tagged with:
 
 * **Project:** python-integrative-exercise
@@ -22,7 +22,7 @@ To ensure safety and ownership, all resources created by this tool are automatic
 Note: The tool strictly filters list views to show only resources containing the CreatedBy tag or signature.
 
 
-## 🛠️*nInstallation**
+## 🛠️**Installation**
 
 1.  **Prerequisites:**
     * Python 3.10+
