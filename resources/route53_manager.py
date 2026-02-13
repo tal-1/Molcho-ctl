@@ -12,10 +12,9 @@ class Route53Manager:
     def create_hosted_zone(self, domain_name, private_zone=False):
         """Create a new Route53 Hosted Zone."""
         try:
-            # We need a unique string so AWS knows this is a new request
             ref = f"molcho-cli-{int(time.time())}"
             config = {
-                'Comment': 'Created by Molcho Platform CLI', 
+                'Comment': self.signature, 
                 'PrivateZone': private_zone
             }
             
@@ -33,20 +32,18 @@ class Route53Manager:
         except Exception as e:
             return {"error": str(e)}
 
+    # ALIAS: This allows the CLI to call 'create_zone' while the GUI calls 'create_hosted_zone'
+    def create_zone(self, domain_name, private_zone=False):
+        return self.create_hosted_zone(domain_name, private_zone)
+
     def list_hosted_zones(self):
         """List ONLY hosted zones created by this tool."""
         try:
-            # 1. Get ALL zones from AWS
             response = self.client.list_hosted_zones()
-            
             my_zones = []
             
-            # 2. Filter them one by one
             for z in response['HostedZones']:
-                # Get the comment from the config
                 comment = z.get('Config', {}).get('Comment', '')
-                
-                # 3. STRICT FILTER: Only show if the signature matches exactly
                 if comment == self.signature:
                     my_zones.append({
                         "Id": z['Id'],
@@ -54,9 +51,7 @@ class Route53Manager:
                         "Count": z['ResourceRecordSetCount'],
                         "Private": z['Config']['PrivateZone']
                     })
-            
             return my_zones
-            
         except ClientError as e:
             print(f"AWS Error: {e}")
             return []
@@ -101,7 +96,7 @@ class Route53Manager:
                         'ResourceRecordSet': {
                             'Name': record_name,
                             'Type': record_type,
-                            'TTL': 300, # TTL is required by syntax even for delete
+                            'TTL': 300,
                             'ResourceRecords': [{'Value': record_value}]
                         }
                     }]
@@ -120,7 +115,6 @@ class Route53Manager:
             
             clean_records = []
             for r in response['ResourceRecordSets']:
-                # Safety check for complex records (like AWS Aliases)
                 if 'ResourceRecords' in r and len(r['ResourceRecords']) > 0:
                     value = r['ResourceRecords'][0]['Value']
                 else:
