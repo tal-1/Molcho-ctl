@@ -41,7 +41,7 @@ class S3Manager:
             # 4. Apply Tags (Ownership) using the new client
             from utils.tags import format_as_ec2_tags
             tag_data = format_as_ec2_tags('s3')
-            tags_list = tag_data['Tags']
+            tags_list = tag_data[0]['Tags']
             
             s3_client.put_bucket_tagging(
                 Bucket=bucket_name,
