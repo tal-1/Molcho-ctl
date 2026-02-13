@@ -19,8 +19,12 @@ class S3Manager:
             session = boto3.session.Session()
             current_region = session.region_name
             
+            # --- FIX: Handle case where region is None ---
+            if current_region is None:
+                current_region = 'us-east-1'
+            # ---------------------------------------------
+            
             # 1. Create Bucket
-            # S3 API requires CreateBucketConfiguration for any region EXCEPT us-east-1
             if current_region == 'us-east-1':
                 self.s3.create_bucket(Bucket=bucket_name)
             else:
@@ -28,6 +32,8 @@ class S3Manager:
                     Bucket=bucket_name,
                     CreateBucketConfiguration={'LocationConstraint': current_region}
                 )
+            
+            # ... rest of the function remains the same ...
 
             # 2. Apply Tags
             # We use the existing helper to generate the list of tags
