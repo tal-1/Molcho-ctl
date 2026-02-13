@@ -15,45 +15,44 @@ class S3Manager:
         Handles Region LocationConstraint automatically.
         """
         try:
-            # Get the region from the current session
+            # 1. Detect the correct region from your AWS Config
             session = boto3.session.Session()
             current_region = session.region_name
             
-            # --- FIX: Handle case where region is None ---
+            # If no region is configured, default to N. Virginia
             if current_region is None:
                 current_region = 'us-east-1'
-            # ---------------------------------------------
-            
-            # 1. Create Bucket
+
+            # 2. Create a FRESH client specifically for this region
+            # This bypasses any "background" defaults the server might force on self.s3
+            s3_client = boto3.client('s3', region_name=current_region)
+
+            # 3. Create Bucket with correct logic
             if current_region == 'us-east-1':
-                self.s3.create_bucket(Bucket=bucket_name)
+                # Case A: N. Virginia (Global Endpoint)
+                s3_client.create_bucket(Bucket=bucket_name)
             else:
-                self.s3.create_bucket(
+                # Case B: All other regions (Require Constraint)
+                s3_client.create_bucket(
                     Bucket=bucket_name,
                     CreateBucketConfiguration={'LocationConstraint': current_region}
                 )
-            
-            # ... rest of the function remains the same ...
 
-            # 2. Apply Tags
-            # We use the existing helper to generate the list of tags
-            # format_as_ec2_tags returns {'ResourceType':..., 'Tags': [...]}
-            # We just need the list inside 'Tags'
+            # 4. Apply Tags (Ownership) using the new client
+            from utils.tags import format_as_ec2_tags
             tag_data = format_as_ec2_tags('s3')
             tags_list = tag_data['Tags']
             
-            self.s3.put_bucket_tagging(
+            s3_client.put_bucket_tagging(
                 Bucket=bucket_name,
                 Tagging={'TagSet': tags_list}
             )
 
-            # 3. Configure Security (Public vs Private)
+            # 5. Configure Security (Public vs Private) using the new client
             if public:
-                # If public, we turn OFF the "Block Public Access" settings
-                self.s3.delete_public_access_block(Bucket=bucket_name)
+                s3_client.delete_public_access_block(Bucket=bucket_name)
             else:
-                # Block all public access (Secure default)
-                self.s3.put_public_access_block(
+                s3_client.put_public_access_block(
                     Bucket=bucket_name,
                     PublicAccessBlockConfiguration={
                         'BlockPublicAcls': True,
