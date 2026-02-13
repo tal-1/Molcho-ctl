@@ -10,49 +10,54 @@ class S3Manager:
     def create_bucket(self, bucket_name, public=False):
         """
         Create an S3 bucket with tags and specific access settings.
-        Args:
-            bucket_name (str): Name of the bucket
-            public (bool): If True, disables 'Block Public Access'. If False, enables it.
+        Handles Region LocationConstraint automatically.
         """
-        
         try:
+            # Get the region from the current session
+            session = boto3.session.Session()
+            region = session.region_name
+            
             # 1. Create Bucket
-            if self.region == 'us-east-1':
-                self.s3.create_bucket(Bucket=bucket_name)
+            # S3 API requires CreateBucketConfiguration for any region EXCEPT us-east-1
+            if region == 'us-east-1':
+                self.client.create_bucket(Bucket=bucket_name)
             else:
-                self.s3.create_bucket(
+                self.client.create_bucket(
                     Bucket=bucket_name,
-                    CreateBucketConfiguration={'LocationConstraint': self.region}
+                    CreateBucketConfiguration={'LocationConstraint': region}
                 )
 
             # 2. Apply Tags (Ownership)
-            tags = format_as_ec2_tags('s3')[0]['Tags']
-            self.s3.put_bucket_tagging(
+            tags = format_as_s3_tags(self.tags)
+            self.client.put_bucket_tagging(
                 Bucket=bucket_name,
                 Tagging={'TagSet': tags}
             )
 
             # 3. Configure Security (Public vs Private)
-            # If public=True, we turn OFF the blocks. If public=False, we turn them ON.
-            block_config = {
-                'BlockPublicAcls': not public,
-                'IgnorePublicAcls': not public,
-                'BlockPublicPolicy': not public,
-                'RestrictPublicBuckets': not public
-            }
+            if public:
+                # If public, we turn OFF the "Block Public Access" settings
+                self.client.delete_public_access_block(Bucket=bucket_name)
+                
+                # Add a bucket policy for public read (Optional, but standard for public buckets)
+                # ... (You can keep your existing public logic here if you had extra) ...
+            else:
+                # Block all public access (Secure default)
+                self.client.put_public_access_block(
+                    Bucket=bucket_name,
+                    PublicAccessBlockConfiguration={
+                        'BlockPublicAcls': True,
+                        'IgnorePublicAcls': True,
+                        'BlockPublicPolicy': True,
+                        'RestrictPublicBuckets': True
+                    }
+                )
 
-            self.s3.put_public_access_block(
-                Bucket=bucket_name,
-                PublicAccessBlockConfiguration=block_config
-            )
-            
-            status = "PUBLIC" if public else "PRIVATE"
-            return {"success": True, "name": bucket_name, "status": status}
+            return {"success": True, "name": bucket_name, "status": "created"}
 
         except ClientError as e:
-            error_code = e.response['Error']['Code']
-            if error_code == 'BucketAlreadyExists':
-                return {"error": "Bucket name already exists globally. Try a more unique name."}
+            return {"error": str(e)}
+        except Exception as e:
             return {"error": str(e)}
 
     def list_buckets(self):
