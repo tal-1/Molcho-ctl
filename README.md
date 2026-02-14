@@ -76,7 +76,7 @@ For more information, use the command `molchoctl -h`
 * `molchoctl route53 list-zones`
 
 #### Create a new zone:
-* `molchoctl route53 create-zone --domain molcho-app.internal`
+* `molchoctl route53 create-zone --name molcho-app.internal`
 ##
 
 ## **Web GUI Usage**
