@@ -64,7 +64,7 @@ For more information, use the command `molchoctl -h`
 
 ### **S3 (Storage):**
 #### Create a private bucket:
-* `molchoctl s3 create --name my-data-bucket --private`
+* `molchoctl s3 create --name my-data-bucket`
 
 #### Create a public bucket (Requires confirmation):
 * `molchoctl s3 create --name my-public-assets --public`
