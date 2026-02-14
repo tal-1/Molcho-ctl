@@ -34,7 +34,7 @@ Note: The tool strictly filters list views to show only resources containing the
     cd Molcho-ctl
     
     # Create a virtual environment if you already have python on your machine (optional but recommended)
-    python -m venv venv
+    python3 -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
     
     # Install dependencies
