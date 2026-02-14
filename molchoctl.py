@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 import click
+import os
+import sys
+import subprocess
 from rich.console import Console
 from rich.table import Table
 
@@ -389,6 +392,28 @@ def create(zone, name, ip):
         console.print(f"[bold red]FAILED:[/bold red] {result['error']}")
     else:
         console.print(f"[bold green]SUCCESS:[/bold green] DNS Record created/updated.")
+
+@cli.command()
+def gui():
+    """Launch the Web Dashboard (Streamlit)."""
+    # 1. Find the absolute path to 'app.py' relative to this script
+    # This assumes app.py is in the same folder as molchoctl.py
+    package_dir = os.path.dirname(os.path.abspath(__file__))
+    app_path = os.path.join(package_dir, "app.py")
+    
+    # 2. Check if the file actually exists (Safety Check)
+    if not os.path.exists(app_path):
+        print(f"Error: Could not find GUI file at {app_path}")
+        return
+
+    print(f"🚀 Launching Molcho GUI from: {app_path}...")
+    
+    # 3. Run the Streamlit command
+    # We use sys.executable to ensure we use the SAME python environment (venv)
+    try:
+        subprocess.run([sys.executable, "-m", "streamlit", "run", app_path])
+    except KeyboardInterrupt:
+        print("\n👋 GUI stopped.")
 
 if __name__ == '__main__':
     cli()
