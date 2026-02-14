@@ -82,6 +82,17 @@ For more information, use the command `molchoctl -h`
 ## **Web GUI Usage**
 For a visual interface, launch the Streamlit dashboard:
 
-`streamlit run app.py`
+`molchoctl gui`
 
 This will open a local website at http://localhost:8501 where you can manage all resources via a GUI.
+
+### **EC2:**
+<img width="1909" height="807" alt="image" src="https://github.com/user-attachments/assets/d28c5ac2-7e87-46ab-b4ca-cd1e5ae757d4" />
+<img width="496" height="157" alt="image" src="https://github.com/user-attachments/assets/7d56d1a1-9ae3-4b96-bd85-ed878c06483b" />
+<img width="504" height="166" alt="image" src="https://github.com/user-attachments/assets/50d65b53-edce-4136-8055-cb731baf1481" />
+
+### **S3:**
+<img width="1885" height="840" alt="image" src="https://github.com/user-attachments/assets/5814bd2e-fba7-4e16-8384-2d27e15e3ea7" />
+
+### **Route53:**
+<img width="1854" height="810" alt="image" src="https://github.com/user-attachments/assets/26ed0622-f2ac-4952-9b16-37baaa2a6274" />
