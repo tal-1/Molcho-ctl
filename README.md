@@ -25,10 +25,11 @@ Note: The tool strictly filters list views to show only resources containing the
 ## **Installation**
 
 1.  **Prerequisites:**
-    * Python 3.10+
+    * Git
+    * Python 3.10+ & pip
     * AWS CLI configured with active credentials (using the `aws configure` command)
 
-2.  **Setup:**
+3.  **Setup:**
     ```bash
     git clone https://github.com/tal-1/Molcho-ctl.git
     cd Molcho-ctl
