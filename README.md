@@ -1,6 +1,6 @@
 <img width="876" height="168" alt="image" src="https://github.com/user-attachments/assets/9e336285-b5b0-4550-92cf-4029883a96fc" />
 
-# The Molcho-ctl Platform
+# The Platform
 
 A self-service tool for managing AWS resources via CLI and Web Dashboard.
 
