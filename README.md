@@ -2,9 +2,9 @@
 
 # The Platform
 
-A self-service tool for managing AWS resources via CLI and Web Dashboard.
+A self-service tool for managing AWS resources using CLI and GUI web dashboards.
 
-This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DNS zones, while enforcing strict safety guardrails and tagging standards.
+This tool automates the provisioning of EC2 instances, S3 buckets and Route53 DNS zones, while enforcing strict, predefined safety and costs guardrails, and tagging standards.
 
 ## **Features**
 
