@@ -21,7 +21,7 @@ To ensure safety and ownership, all resources created by this tool are automatic
 * **Owner:** <your-username> (Detected automatically)
 * **CreatedBy:** molcho-platform-cli
 
-Note: The tool strictly filters list views to show only resources containing the CreatedBy tag or signature.
+Note: The tool strictly filters list views to show only resources containing the 'CreatedBy' tag or signature.
 
 
 ## **Installation**
