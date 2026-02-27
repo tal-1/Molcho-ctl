@@ -1,3 +1,5 @@
+<img width="876" height="168" alt="image" src="https://github.com/user-attachments/assets/9e336285-b5b0-4550-92cf-4029883a96fc" />
+
 # The Molcho-ctl Platform
 
 A self-service tool for managing AWS resources via CLI and Web Dashboard.
@@ -50,7 +52,6 @@ You can manage resources directly from your terminal using the `molchoctl` comma
 
 For more information, use the command `molchoctl -h`
 
-<img width="877" height="1000" alt="image" src="https://github.com/user-attachments/assets/e2bdf13b-4e82-4941-a12e-00bd9ca8dfec" />
 
 
 ### **EC2 (Compute):**
