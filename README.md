@@ -50,6 +50,8 @@ You can manage resources directly from your terminal using the `molchoctl` comma
 
 For more information, use the command `molchoctl -h`
 
+<img width="877" height="1000" alt="image" src="https://github.com/user-attachments/assets/e2bdf13b-4e82-4941-a12e-00bd9ca8dfec" />
+
 
 ### **EC2 (Compute):**
 #### List all instances created by this tool:
